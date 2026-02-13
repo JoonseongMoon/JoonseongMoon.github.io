@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Quality Forecasting — Joonseong</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-hover: #1a1a1a;
+    --border: #222;
+    --border-light: #333;
+    --text: #e8e6e1;
+    --text-muted: #8a8780;
+    --accent: #c4a882;
+    --accent-dim: #8a7560;
+    --accent-glow: rgba(196,168,130,0.08);
+    --tag-bg: #1a1916;
+    --tag-border: #2a2820;
+    --code-bg: #111;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-light) transparent; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── Nav ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  /* ─── Project Hero ─── */
+  .project-hero {
+    padding: 10rem 3rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .project-hero-category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .project-hero-category::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent-dim);
+  }
+
+  .project-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 650px;
+    margin-bottom: 2rem;
+  }
+
+  .project-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .project-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .project-meta-item .label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+
+  .project-meta-item .value {
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .project-meta-item .value a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .project-meta-item .value a:hover { border-color: var(--accent); }
+
+  /* ─── Cover Image ─── */
+  .project-cover {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 4rem;
+    padding: 0 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .project-cover img, .project-cover .cover-placeholder {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .cover-placeholder {
+    height: 400px;
+    background: linear-gradient(135deg, #1a1510, #0d1a18, #141018);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Content Area ─── */
+  .project-content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 3rem 6rem;
+  }
+
+  /* ─── Section Blocks ─── */
+  .content-section {
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .content-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .content-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .content-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .content-section p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    margin-bottom: 1rem;
+  }
+
+  .content-section p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ─── Image Gallery ─── */
+  .image-gallery {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .image-gallery.cols-2 { grid-template-columns: 1fr 1fr; }
+  .image-gallery.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .image-gallery.cols-1 { grid-template-columns: 1fr; }
+
+  .gallery-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover img { transform: scale(1.03); }
+
+  .gallery-item .img-placeholder {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    background: #0f0f0f;
+  }
+
+  .gallery-caption {
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── Code Block ─── */
+  .code-block {
+    margin: 2rem 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .code-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-light);
+  }
+
+  .code-block pre {
+    padding: 1.25rem;
+    background: var(--code-bg);
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .code-block pre .comment { color: #555; }
+  .code-block pre .keyword { color: var(--accent); }
+  .code-block pre .string { color: #7a9e7a; }
+  .code-block pre .function { color: #8aabcc; }
+
+  /* ─── Process / Journey Timeline ─── */
+  .timeline {
+    margin: 2rem 0;
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 1.5rem;
+  }
+
+  .timeline-item:last-child { margin-bottom: 0; }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent-dim);
+  }
+
+  .timeline-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-dim);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  /* ─── Key Findings / Highlights Box ─── */
+  .highlight-box {
+    margin: 2rem 0;
+    padding: 1.5rem 1.75rem;
+    background: var(--accent-glow);
+    border: 1px solid var(--tag-border);
+    border-left: 3px solid var(--accent-dim);
+    border-radius: 0 10px 10px 0;
+  }
+
+  .highlight-box h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  .highlight-box ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .highlight-box ul li {
+    padding: 0.35rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .highlight-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-dim);
+  }
+
+  /* ─── Tags row ─── */
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.65rem;
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+
+  /* ─── Next / Prev Project Navigation ─── */
+  .project-nav {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 3rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .project-nav a {
+    flex: 1;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .project-nav a:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  .project-nav .nav-direction {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .project-nav .nav-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+
+  .project-nav a.next { text-align: right; }
+
+  /* ─── Footer ─── */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .project-hero { padding: 8rem 1.5rem 3rem; }
+    .project-cover { padding: 0 1.5rem; }
+    .project-content { padding: 0 1.5rem 4rem; }
+    .project-meta-row { flex-direction: column; gap: 1rem; }
+    .image-gallery.cols-2, .image-gallery.cols-3 { grid-template-columns: 1fr; }
+    .project-nav { flex-direction: column; padding: 0 1.5rem 4rem; }
+    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Nav ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">JS<span>.</span></a>
+  <a href="index.html" class="back-link">← Back to Home</a>
+</nav>
+
+<!-- ─── Project Hero ─── -->
+<div class="project-hero">
+  <div class="project-hero-category">Time Series / ML</div>
+  <h1>Air Quality Forecasting with VAR Models</h1>
+  <p class="project-hero-desc">
+    Multivariate time series forecasting for air quality prediction using Vector Autoregression, manual differencing for stationarity, and comprehensive backtesting evaluation frameworks.
+  </p>
+  <div class="project-meta-row">
+    <div class="project-meta-item">
+      <span class="label">Year</span>
+      <span class="value">2025</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Role</span>
+      <span class="value">Course Project</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Stack</span>
+      <span class="value">Python · statsmodels · Pandas</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Code</span>
+      <span class="value"><a href="#">GitHub Repo ↗</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Cover Image ─── -->
+<div class="project-cover">
+  <!-- Replace with: <img src="images/dt-cover.jpg" alt="Digital Twin Cover"> -->
+  <div class="cover-placeholder">Replace with project cover image</div>
+</div>
+
+<!-- ─── Content ─── -->
+<div class="project-content">
+
+  <!-- Overview -->
+  <div class="content-section">
+    <div class="content-section-label">Overview</div>
+    <h2>Why Trustworthiness Matters</h2>
+    <p>
+      Digital twins promise real-time mirroring of physical buildings, but how much can we trust their predictions? This research develops a systematic framework for <strong>auditing data quality</strong> and <strong>quantifying uncertainty</strong> in digital twin outputs for the CMU Intelligent Workplace.
+    </p>
+    <p>
+      The goal is to move beyond black-box predictions toward transparent, calibrated confidence intervals that building operators can actually rely on for decision-making.
+    </p>
+  </div>
+
+  <!-- Process / Journey -->
+  <div class="content-section">
+    <div class="content-section-label">Process</div>
+    <h2>Research Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">Phase 1 — Literature Review</div>
+        <div class="timeline-title">Surveying the Landscape</div>
+        <div class="timeline-desc">Reviewed 16+ papers on HVAC control systems using AI/ML, identifying gaps in trustworthiness metrics and uncertainty reporting in digital twin literature.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Phase 2 — Data Pipeline</div>
+        <div class="timeline-title">Sensor Data Auditing</div>
+        <div class="timeline-desc">Built an automated pipeline to detect anomalies, missing values, and drift in IW sensor data across multiple zones and time periods.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Phase 3 — EnergyPlus Modeling</div>
+        <div class="timeline-title">Calibrated Simulation</div>
+        <div class="timeline-desc">Developed zone-level thermal models in EnergyPlus, calibrating against measured data and quantifying prediction intervals.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Phase 4 — Framework</div>
+        <div class="timeline-title">Trustworthiness Metrics</div>
+        <div class="timeline-desc">Formalized a scoring framework that combines data quality indicators with model uncertainty to produce actionable trust scores.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screenshots / Gallery -->
+  <div class="content-section">
+    <div class="content-section-label">Visuals</div>
+    <h2>Screenshots &amp; Results</h2>
+
+    <div class="image-gallery cols-2">
+      <div class="gallery-item">
+        <!-- Replace with: <img src="images/dt-dashboard.jpg" alt="Dashboard"> -->
+        <div class="img-placeholder">Screenshot 1</div>
+        <div class="gallery-caption">Data quality dashboard showing sensor health across zones</div>
+      </div>
+      <div class="gallery-item">
+        <div class="img-placeholder">Screenshot 2</div>
+        <div class="gallery-caption">EnergyPlus model vs. measured temperature comparison</div>
+      </div>
+    </div>
+
+    <div class="image-gallery cols-1" style="margin-top:1rem;">
+      <div class="gallery-item">
+        <div class="img-placeholder" style="height:300px;">Wide screenshot / diagram</div>
+        <div class="gallery-caption">System architecture: from sensor ingestion to trust score output</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="content-section">
+    <div class="content-section-label">Implementation</div>
+    <h2>Code Highlights</h2>
+    <p>
+      A sample of the data quality scoring pipeline:
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>data_quality.py</span>
+      </div>
+      <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="keyword">def</span> <span class="function">compute_quality_score</span>(df, col):
+    <span class="string">"""Compute data quality score for a sensor column."""</span>
+    completeness = 1 - df[col].isna().mean()
+    
+    <span class="comment"># Detect anomalies via IQR</span>
+    Q1, Q3 = df[col].quantile([0.25, 0.75])
+    iqr = Q3 - Q1
+    outlier_rate = ((df[col] &lt; Q1 - 1.5*iqr) | 
+                    (df[col] &gt; Q3 + 1.5*iqr)).mean()
+    
+    <span class="comment"># Weighted composite score</span>
+    score = 0.6 * completeness + 0.4 * (1 - outlier_rate)
+    <span class="keyword">return</span> round(score, 3)</pre>
+    </div>
+
+    <div class="tags-row">
+      <span class="tag">Python</span>
+      <span class="tag">Pandas</span>
+      <span class="tag">EnergyPlus</span>
+      <span class="tag">Uncertainty Quantification</span>
+      <span class="tag">Data Quality</span>
+    </div>
+  </div>
+
+  <!-- Key Findings -->
+  <div class="content-section">
+    <div class="content-section-label">Findings</div>
+    <h2>Key Results</h2>
+
+    <div class="highlight-box">
+      <h4>Highlights</h4>
+      <ul>
+        <li>Identified 23% of sensor readings as degraded quality across 12 IW zones</li>
+        <li>Calibrated EnergyPlus models achieved RMSE of ±1.2°C for zone temperatures</li>
+        <li>Trust scores correlated strongly with operator-reported reliability concerns</li>
+        <li>Framework reduced false confidence in model predictions by ~35%</li>
+      </ul>
+    </div>
+
+    <p>
+      <em>Note: Replace the above with your actual results as the project progresses.</em>
+    </p>
+  </div>
+
+</div>
+
+<!-- ─── Next / Previous Project ─── -->
+<div class="project-nav">
+  <a href="project-snow-detection.html">
+    <span class="nav-direction">← Previous</span>
+    <span class="nav-title">Roof Snow Detection</span>
+  </a>
+  <a href="project-digital-twin.html" class="next">
+    <span class="nav-direction">Next →</span>
+    <span class="nav-title">Digital Twin Framework</span>
+  </a>
+</div>
+
+<footer>
+  <span>© 2025 Joonseong. Built with care.</span>
+  <span>Pittsburgh, PA</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.content-section').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
