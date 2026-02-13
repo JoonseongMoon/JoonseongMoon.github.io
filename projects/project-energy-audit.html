@@ -236,6 +236,14 @@
     letter-spacing: -0.01em;
   }
 
+  .content-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
   .content-section p {
     color: var(--text-muted);
     font-size: 0.95rem;
@@ -264,29 +272,18 @@
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--surface);
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .gallery-item img {
+    max-width: 500px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover img { transform: scale(1.03); }
-
-  .gallery-item .img-placeholder {
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    background: #0f0f0f;
+    padding: 1rem;
   }
 
   .gallery-caption {
@@ -294,6 +291,8 @@
     font-size: 0.78rem;
     color: var(--text-muted);
     border-top: 1px solid var(--border);
+    width: 100%;
+    background: var(--surface);
   }
 
   /* ─── Code Block ─── */
@@ -341,6 +340,7 @@
   .code-block pre .keyword { color: var(--accent); }
   .code-block pre .string { color: #7a9e7a; }
   .code-block pre .function { color: #8aabcc; }
+  .code-block pre .number { color: #d4a76a; }
 
   /* ─── Process / Journey Timeline ─── */
   .timeline {
@@ -532,7 +532,7 @@
 <!-- ─── Nav ─── -->
 <nav>
   <a href="../index.html" class="nav-logo">JS<span>.</span></a>
-  <a href="../index.html" class="back-link">← Back to Home</a>
+  <a href="../index.html" class="back-link">&larr; Back to Home</a>
 </nav>
 
 <!-- ─── Project Hero ─── -->
@@ -540,12 +540,16 @@
   <div class="project-hero-category">Building Energy</div>
   <h1>Smart Energy Audit Assistant</h1>
   <p class="project-hero-desc">
-    Interactive Streamlit application for building energy auditing with HERS index calculations, climate zone detection using shapefiles, and automated efficiency recommendations with interactive mapping.
+    An interactive Streamlit web application that provides personalized home energy scoring and retrofit recommendations through climate-aware HERS Index calculations, GIS-based climate zone detection, and automated seasonal consumption analysis.
   </p>
   <div class="project-meta-row">
     <div class="project-meta-item">
+      <span class="label">Type</span>
+      <span class="value">Custom Project</span>
+    </div>
+    <div class="project-meta-item">
       <span class="label">Year</span>
-      <span class="value">2024</span>
+      <span class="value">2025</span>
     </div>
     <div class="project-meta-item">
       <span class="label">Role</span>
@@ -553,19 +557,9 @@
     </div>
     <div class="project-meta-item">
       <span class="label">Stack</span>
-      <span class="value">Python · Streamlit · GIS</span>
-    </div>
-    <div class="project-meta-item">
-      <span class="label">Code</span>
-      <span class="value"><a href="#">GitHub Repo ↗</a></span>
+      <span class="value">Python, Streamlit, Plotly, Folium</span>
     </div>
   </div>
-</div>
-
-<!-- ─── Cover Image ─── -->
-<div class="project-cover">
-  <!-- Replace with: <img src="images/dt-cover.jpg" alt="Digital Twin Cover"> -->
-  <div class="cover-placeholder">Replace with project cover image</div>
 </div>
 
 <!-- ─── Content ─── -->
@@ -574,126 +568,163 @@
   <!-- Overview -->
   <div class="content-section">
     <div class="content-section-label">Overview</div>
-    <h2>Why Trustworthiness Matters</h2>
+    <h2>Project Objective</h2>
     <p>
-      Digital twins promise real-time mirroring of physical buildings, but how much can we trust their predictions? This research develops a systematic framework for <strong>auditing data quality</strong> and <strong>quantifying uncertainty</strong> in digital twin outputs for the CMU Intelligent Workplace.
+      Homeowners often lack accessible tools to understand their building's energy performance relative to code baselines. This project builds a <strong>5-step interactive web application</strong> that walks users through location selection, building characterization, energy usage input, system evaluation, and delivers a comprehensive energy audit report with actionable retrofit recommendations.
     </p>
     <p>
-      The goal is to move beyond black-box predictions toward transparent, calibrated confidence intervals that building operators can actually rely on for decision-making.
+      The app integrates <strong>ASHRAE/IECC climate zone detection</strong> using both US shapefiles (ClimateZones.shp) and a 70+ worldwide reference city database, ensuring accurate climate-adjusted baselines for any location globally.
     </p>
   </div>
 
-  <!-- Process / Journey -->
+  <!-- App Workflow -->
   <div class="content-section">
-    <div class="content-section-label">Process</div>
-    <h2>Research Journey</h2>
+    <div class="content-section-label">Workflow</div>
+    <h2>5-Step Audit Process</h2>
     <div class="timeline">
       <div class="timeline-item">
-        <div class="timeline-date">Phase 1 — Literature Review</div>
-        <div class="timeline-title">Surveying the Landscape</div>
-        <div class="timeline-desc">Reviewed 16+ papers on HVAC control systems using AI/ML, identifying gaps in trustworthiness metrics and uncertainty reporting in digital twin literature.</div>
+        <div class="timeline-date">Step 1 — Location</div>
+        <div class="timeline-title">Interactive Location Selection</div>
+        <div class="timeline-desc">Address search via Nominatim geocoding API with click-to-select Folium map. Automatically detects ASHRAE/IECC climate zone using shapefile polygon containment or nearest-city fallback with Haversine distance.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 2 — Data Pipeline</div>
-        <div class="timeline-title">Sensor Data Auditing</div>
-        <div class="timeline-desc">Built an automated pipeline to detect anomalies, missing values, and drift in IW sensor data across multiple zones and time periods.</div>
+        <div class="timeline-date">Step 2 — Building Info</div>
+        <div class="timeline-title">Building Characterization</div>
+        <div class="timeline-desc">Collects building type, year built, square footage, stories, basement condition, roof type/color, wall construction, and insulation level to build a complete envelope profile.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 3 — EnergyPlus Modeling</div>
-        <div class="timeline-title">Calibrated Simulation</div>
-        <div class="timeline-desc">Developed zone-level thermal models in EnergyPlus, calibrating against measured data and quantifying prediction intervals.</div>
+        <div class="timeline-date">Step 3 — Energy Usage</div>
+        <div class="timeline-title">Monthly Consumption Analysis</div>
+        <div class="timeline-desc">Accepts monthly energy input as kWh or dollar bills (converted at local rate). Generates interactive Plotly bar charts with seasonal breakdown and average comparison.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 4 — Framework</div>
-        <div class="timeline-title">Trustworthiness Metrics</div>
-        <div class="timeline-desc">Formalized a scoring framework that combines data quality indicators with model uncertainty to produce actionable trust scores.</div>
+        <div class="timeline-date">Step 4 — Systems</div>
+        <div class="timeline-title">HVAC &amp; Efficiency Features</div>
+        <div class="timeline-desc">Evaluates heating/cooling systems, water heater type, window glazing, and efficiency features including solar panels, smart thermostats, and Energy Star appliances.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Step 5 — Results</div>
+        <div class="timeline-title">Energy Score &amp; Recommendations</div>
+        <div class="timeline-desc">Calculates HERS Index, Energy Star score, and letter grade. Generates personalized upgrade recommendations sorted by payback period with estimated cost and annual savings.</div>
       </div>
     </div>
   </div>
 
-  <!-- Screenshots / Gallery -->
+  <!-- Climate Zone Detection -->
   <div class="content-section">
-    <div class="content-section-label">Visuals</div>
-    <h2>Screenshots &amp; Results</h2>
-
-    <div class="image-gallery cols-2">
-      <div class="gallery-item">
-        <!-- Replace with: <img src="images/dt-dashboard.jpg" alt="Dashboard"> -->
-        <div class="img-placeholder">Screenshot 1</div>
-        <div class="gallery-caption">Data quality dashboard showing sensor health across zones</div>
-      </div>
-      <div class="gallery-item">
-        <div class="img-placeholder">Screenshot 2</div>
-        <div class="gallery-caption">EnergyPlus model vs. measured temperature comparison</div>
-      </div>
-    </div>
-
-    <div class="image-gallery cols-1" style="margin-top:1rem;">
-      <div class="gallery-item">
-        <div class="img-placeholder" style="height:300px;">Wide screenshot / diagram</div>
-        <div class="gallery-caption">System architecture: from sensor ingestion to trust score output</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Code -->
-  <div class="content-section">
-    <div class="content-section-label">Implementation</div>
-    <h2>Code Highlights</h2>
+    <div class="content-section-label">Feature 1</div>
+    <h2>Climate Zone Detection</h2>
     <p>
-      A sample of the data quality scoring pipeline:
+      A key challenge in energy auditing is accurately determining the <strong>ASHRAE/IECC climate zone</strong> for any global location. The app implements a dual-method approach:
+    </p>
+    <p>
+      <strong>Primary method:</strong> GeoPandas reads the ClimateZones shapefile and performs point-in-polygon containment tests for US locations, extracting zone number and moisture regime (Humid/Dry/Marine) from the IECC21 and Moisture21 columns.
+    </p>
+    <p>
+      <strong>Fallback method:</strong> For international locations or shapefile failures, the app calculates Haversine distances to 70+ reference cities worldwide and assigns the climate zone of the nearest city within 500 km.
     </p>
 
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>data_quality.py</span>
+        <span>climate_zone_detector.py</span>
       </div>
-      <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
-<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+      <pre><span class="keyword">def</span> <span class="function">get_climate_zone</span>(self, latitude, longitude):
+    point = Point(longitude, latitude)
+    matches = self.gdf[self.gdf.geometry.contains(point)]
 
-<span class="keyword">def</span> <span class="function">compute_quality_score</span>(df, col):
-    <span class="string">"""Compute data quality score for a sensor column."""</span>
-    completeness = 1 - df[col].isna().mean()
-    
-    <span class="comment"># Detect anomalies via IQR</span>
-    Q1, Q3 = df[col].quantile([0.25, 0.75])
-    iqr = Q3 - Q1
-    outlier_rate = ((df[col] &lt; Q1 - 1.5*iqr) | 
-                    (df[col] &gt; Q3 + 1.5*iqr)).mean()
-    
-    <span class="comment"># Weighted composite score</span>
-    score = 0.6 * completeness + 0.4 * (1 - outlier_rate)
-    <span class="keyword">return</span> round(score, 3)</pre>
-    </div>
+    <span class="keyword">if not</span> matches.empty:
+        zone_data = matches.iloc[0]
+        zone_name = zone_data[self.zone_column]
+        <span class="keyword">return</span> self._parse_zone_info(zone_name, zone_data)
 
-    <div class="tags-row">
-      <span class="tag">Python</span>
-      <span class="tag">Pandas</span>
-      <span class="tag">EnergyPlus</span>
-      <span class="tag">Uncertainty Quantification</span>
-      <span class="tag">Data Quality</span>
+    <span class="comment"># Fallback: nearest city from 70+ reference database</span>
+    nearest = find_nearest_city_climate_zone(latitude, longitude)
+    <span class="keyword">if</span> nearest:
+        nearest.update(self._get_zone_characteristics(
+            nearest[<span class="string">'zone_number'</span>], nearest[<span class="string">'zone_letter'</span>]
+        ))
+        <span class="keyword">return</span> nearest</pre>
     </div>
   </div>
 
-  <!-- Key Findings -->
+  <!-- HERS Index -->
   <div class="content-section">
-    <div class="content-section-label">Findings</div>
-    <h2>Key Results</h2>
+    <div class="content-section-label">Feature 2</div>
+    <h2>HERS Index Calculation</h2>
+    <p>
+      The <strong>HERS (Home Energy Rating System) Index</strong> scores a home's energy efficiency on a 0-150+ scale, where 100 represents the 2006 IECC standard code home. The app computes this by comparing actual annual consumption against a <strong>climate-adjusted baseline EUI</strong> (kWh/sqft) specific to each ASHRAE zone.
+    </p>
+    <p>
+      The baseline is further adjusted using multiplicative impact factors for building age, roof type, heating system efficiency, insulation quality, and smart features. The final score is mapped to an <strong>Energy Star score</strong> (0-100) and a <strong>letter grade</strong> (A+ through F).
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>hers_calculation.py</span>
+      </div>
+      <pre><span class="keyword">def</span> <span class="function">calculate_hers_index</span>(self, features):
+    actual_consumption = sum(features.monthly_kwh)
+    actual_eui = actual_consumption / features.square_footage
+
+    <span class="comment"># Zone-specific HERS 100 baseline (kWh/sqft)</span>
+    zone_num = self._get_zone_number(features.climate_zone)
+    reference_eui = self.hers_100_baseline.get(zone_num, <span class="number">8.0</span>)
+    reference_consumption = reference_eui * features.square_footage
+
+    raw_hers = (actual_consumption / reference_consumption) * <span class="number">100</span>
+    <span class="keyword">return</span> int(min(<span class="number">250</span>, max(<span class="number">0</span>, raw_hers)))</pre>
+    </div>
+  </div>
+
+  <!-- Seasonal Analysis & Recommendations -->
+  <div class="content-section">
+    <div class="content-section-label">Feature 3</div>
+    <h2>Seasonal Analysis &amp; Recommendations</h2>
+    <p>
+      The app performs <strong>automated seasonal pattern detection</strong> by comparing winter (Dec-Feb), spring (Mar-May), summer (Jun-Aug), and fall (Sep-Nov) consumption averages. It flags issues such as high cooling loads (summer/winter ratio &gt; 1.5), excessive heating consumption, and high constant baseloads.
+    </p>
+    <p>
+      Based on the building profile and detected issues, the system generates <strong>prioritized retrofit recommendations</strong> including estimated investment cost, annual savings, and payback period. Recommendations range from quick wins like air sealing ($300, 1-year payback) to major upgrades like heat pump installation ($7,000, 7-year payback).
+    </p>
 
     <div class="highlight-box">
-      <h4>Highlights</h4>
+      <h4>Sample Recommendations Engine Logic</h4>
       <ul>
-        <li>Identified 23% of sensor readings as degraded quality across 12 IW zones</li>
-        <li>Calibrated EnergyPlus models achieved RMSE of ±1.2°C for zone temperatures</li>
-        <li>Trust scores correlated strongly with operator-reported reliability concerns</li>
-        <li>Framework reduced false confidence in model predictions by ~35%</li>
+        <li>Building age &gt; 30 years + poor insulation: Recommend R-50 attic insulation upgrade</li>
+        <li>Electric resistance heating: Recommend heat pump conversion</li>
+        <li>Flat roof + dark color: Recommend cool roof coating</li>
+        <li>Single-pane windows: Recommend Energy Star double-pane replacement</li>
+        <li>No smart thermostat: Recommend programmable thermostat ($100, 2-year payback)</li>
+        <li>Annual usage &gt; 15,000 kWh + no solar: Recommend rooftop solar installation</li>
       </ul>
     </div>
+  </div>
 
+  <!-- Technical Architecture -->
+  <div class="content-section">
+    <div class="content-section-label">Architecture</div>
+    <h2>Technical Stack</h2>
     <p>
-      <em>Note: Replace the above with your actual results as the project progresses.</em>
+      The application is built entirely in Python using <strong>Streamlit</strong> for the interactive UI with a multi-step wizard pattern managed through session state. Key libraries include <strong>Folium</strong> and <strong>streamlit-folium</strong> for interactive mapping, <strong>GeoPandas</strong> with PyOGRIO for shapefile processing, <strong>Plotly</strong> for responsive data visualizations, and <strong>Geopy</strong> (Nominatim) for geocoding.
     </p>
+    <p>
+      The climate zone shapefile covers all US counties with IECC 2021 zone classifications. For global coverage, a reference database of 70+ cities across 6 continents provides nearest-neighbor climate zone estimation using Haversine distance calculations.
+    </p>
+
+    <div class="tags-row">
+      <span class="tag">Python</span>
+      <span class="tag">Streamlit</span>
+      <span class="tag">Plotly</span>
+      <span class="tag">Folium</span>
+      <span class="tag">GeoPandas</span>
+      <span class="tag">Shapely</span>
+      <span class="tag">Geopy</span>
+      <span class="tag">Scikit-learn</span>
+      <span class="tag">HERS Index</span>
+      <span class="tag">ASHRAE Climate Zones</span>
+    </div>
   </div>
 
 </div>
@@ -701,17 +732,17 @@
 <!-- ─── Next / Previous Project ─── -->
 <div class="project-nav">
   <a href="project-digital-twin.html">
-    <span class="nav-direction">← Previous</span>
-    <span class="nav-title">Digital Twin Framework</span>
+    <span class="nav-direction">&larr; Previous</span>
+    <span class="nav-title">Spring-Mass-Damper Modeling</span>
   </a>
   <a href="project-snow-detection.html" class="next">
-    <span class="nav-direction">Next →</span>
+    <span class="nav-direction">Next &rarr;</span>
     <span class="nav-title">Roof Snow Detection</span>
   </a>
 </div>
 
 <footer>
-  <span>© 2025 Joonseong. Built with care.</span>
+  <span>&copy; 2025 Joonseong. Built with care.</span>
   <span>Pittsburgh, PA</span>
 </footer>
 

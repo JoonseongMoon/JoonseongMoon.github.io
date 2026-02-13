@@ -236,6 +236,14 @@
     letter-spacing: -0.01em;
   }
 
+  .content-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
   .content-section p {
     color: var(--text-muted);
     font-size: 0.95rem;
@@ -264,29 +272,18 @@
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--surface);
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .gallery-item img {
+    max-width: 500px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover img { transform: scale(1.03); }
-
-  .gallery-item .img-placeholder {
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    background: #0f0f0f;
+    padding: 1rem;
   }
 
   .gallery-caption {
@@ -294,6 +291,8 @@
     font-size: 0.78rem;
     color: var(--text-muted);
     border-top: 1px solid var(--border);
+    width: 100%;
+    background: var(--surface);
   }
 
   /* ─── Code Block ─── */
@@ -341,6 +340,7 @@
   .code-block pre .keyword { color: var(--accent); }
   .code-block pre .string { color: #7a9e7a; }
   .code-block pre .function { color: #8aabcc; }
+  .code-block pre .number { color: #d4a76a; }
 
   /* ─── Process / Journey Timeline ─── */
   .timeline {
@@ -532,7 +532,7 @@
 <!-- ─── Nav ─── -->
 <nav>
   <a href="../index.html" class="nav-logo">JS<span>.</span></a>
-  <a href="../index.html" class="back-link">← Back to Home</a>
+  <a href="../index.html" class="back-link">&larr; Back to Home</a>
 </nav>
 
 <!-- ─── Project Hero ─── -->
@@ -540,32 +540,26 @@
   <div class="project-hero-category">Computer Vision</div>
   <h1>Roof Snow Detection with U-Net</h1>
   <p class="project-hero-desc">
-    Semantic segmentation model for detecting snow on roof imagery using HSV-based preprocessing, separated loss functions for bright and shadow snow, and LabelMe manual annotations.
+    A semantic segmentation pipeline for detecting snow coverage on drone-captured roof imagery, combining HSV-based automatic labeling with manual LabelMe annotations through a dual-loss U-Net architecture.
   </p>
   <div class="project-meta-row">
+    <div class="project-meta-item">
+      <span class="label">Type</span>
+      <span class="value">Research Assistant</span>
+    </div>
     <div class="project-meta-item">
       <span class="label">Year</span>
       <span class="value">2025</span>
     </div>
     <div class="project-meta-item">
       <span class="label">Role</span>
-      <span class="value">Researcher</span>
+      <span class="value">Researcher / Developer</span>
     </div>
     <div class="project-meta-item">
       <span class="label">Stack</span>
-      <span class="value">PyTorch · OpenCV · U-Net</span>
-    </div>
-    <div class="project-meta-item">
-      <span class="label">Code</span>
-      <span class="value"><a href="#">GitHub Repo ↗</a></span>
+      <span class="value">PyTorch, OpenCV, U-Net</span>
     </div>
   </div>
-</div>
-
-<!-- ─── Cover Image ─── -->
-<div class="project-cover">
-  <!-- Replace with: <img src="images/dt-cover.jpg" alt="Digital Twin Cover"> -->
-  <div class="cover-placeholder">Replace with project cover image</div>
 </div>
 
 <!-- ─── Content ─── -->
@@ -574,126 +568,207 @@
   <!-- Overview -->
   <div class="content-section">
     <div class="content-section-label">Overview</div>
-    <h2>Why Trustworthiness Matters</h2>
+    <h2>Problem Statement</h2>
     <p>
-      Digital twins promise real-time mirroring of physical buildings, but how much can we trust their predictions? This research develops a systematic framework for <strong>auditing data quality</strong> and <strong>quantifying uncertainty</strong> in digital twin outputs for the CMU Intelligent Workplace.
+      Monitoring snow accumulation on building rooftops from drone imagery is critical for structural safety assessment. However, snow detection is challenging because <strong>bright snow</strong> (high value, low saturation) is easily captured by color thresholds, while <strong>shadow snow</strong> (snow in shaded areas) appears darker and is often misclassified as non-snow by simple HSV rules.
     </p>
     <p>
-      The goal is to move beyond black-box predictions toward transparent, calibrated confidence intervals that building operators can actually rely on for decision-making.
+      This project develops a <strong>U-Net segmentation model</strong> that combines two complementary supervision signals: automated HSV-based masks for confident bright/dark pixels, and manual LabelMe polygon annotations for ambiguous shadow regions. A separated dual-loss function trains the network to handle both cases simultaneously.
     </p>
   </div>
 
-  <!-- Process / Journey -->
+  <!-- Pipeline -->
   <div class="content-section">
-    <div class="content-section-label">Process</div>
-    <h2>Research Journey</h2>
+    <div class="content-section-label">Pipeline</div>
+    <h2>Training Pipeline</h2>
     <div class="timeline">
       <div class="timeline-item">
-        <div class="timeline-date">Phase 1 — Literature Review</div>
-        <div class="timeline-title">Surveying the Landscape</div>
-        <div class="timeline-desc">Reviewed 16+ papers on HVAC control systems using AI/ML, identifying gaps in trustworthiness metrics and uncertainty reporting in digital twin literature.</div>
+        <div class="timeline-date">Stage 1 — HSV Auto-Labeling</div>
+        <div class="timeline-title">Confidence-Based Mask Generation</div>
+        <div class="timeline-desc">Converts images to HSV color space and classifies pixels into three categories: confident snow (V &ge; 200, S &le; 30), confident non-snow (V &lt; 100 or S &gt; 80), and uncertain (everything else, ignored during loss). Morphological cleanup removes noise.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 2 — Data Pipeline</div>
-        <div class="timeline-title">Sensor Data Auditing</div>
-        <div class="timeline-desc">Built an automated pipeline to detect anomalies, missing values, and drift in IW sensor data across multiple zones and time periods.</div>
+        <div class="timeline-date">Stage 2 — LabelMe Annotation</div>
+        <div class="timeline-title">Manual Shadow Snow Labels</div>
+        <div class="timeline-desc">Flagged images with ambiguous regions are manually annotated using LabelMe polygon tool. JSON annotations are parsed to binary masks, providing ground truth for shadow snow that HSV cannot capture.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 3 — EnergyPlus Modeling</div>
-        <div class="timeline-title">Calibrated Simulation</div>
-        <div class="timeline-desc">Developed zone-level thermal models in EnergyPlus, calibrating against measured data and quantifying prediction intervals.</div>
+        <div class="timeline-date">Stage 3 — Roof Masking</div>
+        <div class="timeline-title">Background Exclusion</div>
+        <div class="timeline-desc">Black background pixels (from drone image cropping) are excluded via grayscale thresholding. All masks are intersected with the roof mask to ensure predictions are constrained to actual roof area.</div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Phase 4 — Framework</div>
-        <div class="timeline-title">Trustworthiness Metrics</div>
-        <div class="timeline-desc">Formalized a scoring framework that combines data quality indicators with model uncertainty to produce actionable trust scores.</div>
+        <div class="timeline-date">Stage 4 — U-Net Training</div>
+        <div class="timeline-title">Dual-Loss Optimization</div>
+        <div class="timeline-desc">The model trains with a separated loss: HSV BCE loss on confident pixels + LabelMe BCE loss on annotated regions. Adam optimizer with ReduceLROnPlateau scheduler, 50 epochs, batch size 8, input size 256&times;256.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Stage 5 — Inference</div>
+        <div class="timeline-title">Snow Coverage Estimation</div>
+        <div class="timeline-desc">Trained model predicts pixel-level snow probability maps. Binary masks are generated at threshold 0.5, and snow coverage ratio is computed as snow pixels / roof pixels for each image.</div>
       </div>
     </div>
   </div>
 
-  <!-- Screenshots / Gallery -->
+  <!-- U-Net Architecture -->
   <div class="content-section">
-    <div class="content-section-label">Visuals</div>
-    <h2>Screenshots &amp; Results</h2>
-
-    <div class="image-gallery cols-2">
-      <div class="gallery-item">
-        <!-- Replace with: <img src="images/dt-dashboard.jpg" alt="Dashboard"> -->
-        <div class="img-placeholder">Screenshot 1</div>
-        <div class="gallery-caption">Data quality dashboard showing sensor health across zones</div>
-      </div>
-      <div class="gallery-item">
-        <div class="img-placeholder">Screenshot 2</div>
-        <div class="gallery-caption">EnergyPlus model vs. measured temperature comparison</div>
-      </div>
-    </div>
-
-    <div class="image-gallery cols-1" style="margin-top:1rem;">
-      <div class="gallery-item">
-        <div class="img-placeholder" style="height:300px;">Wide screenshot / diagram</div>
-        <div class="gallery-caption">System architecture: from sensor ingestion to trust score output</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Code -->
-  <div class="content-section">
-    <div class="content-section-label">Implementation</div>
-    <h2>Code Highlights</h2>
+    <div class="content-section-label">Architecture</div>
+    <h2>U-Net Model</h2>
     <p>
-      A sample of the data quality scoring pipeline:
+      The model follows the classic <strong>U-Net encoder-decoder architecture</strong> with skip connections. The encoder has 4 stages (64 &rarr; 128 &rarr; 256 &rarr; 512 channels) with max pooling, a 1024-channel bottleneck, and a symmetric decoder with transposed convolutions. Each block uses <strong>DoubleConv</strong> (Conv2d &rarr; BatchNorm &rarr; ReLU &times; 2). Bilinear interpolation handles size mismatches at skip connections.
     </p>
 
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>data_quality.py</span>
+        <span>unet.py</span>
       </div>
-      <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
-<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+      <pre><span class="keyword">class</span> <span class="function">UNet</span>(nn.Module):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, in_channels=<span class="number">3</span>, out_channels=<span class="number">1</span>):
+        super().__init__()
+        self.enc1 = DoubleConv(in_channels, <span class="number">64</span>)
+        self.enc2 = DoubleConv(<span class="number">64</span>, <span class="number">128</span>)
+        self.enc3 = DoubleConv(<span class="number">128</span>, <span class="number">256</span>)
+        self.enc4 = DoubleConv(<span class="number">256</span>, <span class="number">512</span>)
+        self.pool = nn.MaxPool2d(<span class="number">2</span>)
+        self.bottleneck = DoubleConv(<span class="number">512</span>, <span class="number">1024</span>)
 
-<span class="keyword">def</span> <span class="function">compute_quality_score</span>(df, col):
-    <span class="string">"""Compute data quality score for a sensor column."""</span>
-    completeness = 1 - df[col].isna().mean()
-    
-    <span class="comment"># Detect anomalies via IQR</span>
-    Q1, Q3 = df[col].quantile([0.25, 0.75])
-    iqr = Q3 - Q1
-    outlier_rate = ((df[col] &lt; Q1 - 1.5*iqr) | 
-                    (df[col] &gt; Q3 + 1.5*iqr)).mean()
-    
-    <span class="comment"># Weighted composite score</span>
-    score = 0.6 * completeness + 0.4 * (1 - outlier_rate)
-    <span class="keyword">return</span> round(score, 3)</pre>
-    </div>
+        <span class="comment"># Decoder with skip connections</span>
+        self.up4 = nn.ConvTranspose2d(<span class="number">1024</span>, <span class="number">512</span>, <span class="number">2</span>, stride=<span class="number">2</span>)
+        self.dec4 = DoubleConv(<span class="number">1024</span>, <span class="number">512</span>)
+        <span class="comment">... # symmetric up2, up1</span>
+        self.out = nn.Conv2d(<span class="number">64</span>, out_channels, <span class="number">1</span>)
 
-    <div class="tags-row">
-      <span class="tag">Python</span>
-      <span class="tag">Pandas</span>
-      <span class="tag">EnergyPlus</span>
-      <span class="tag">Uncertainty Quantification</span>
-      <span class="tag">Data Quality</span>
+    <span class="keyword">def</span> <span class="function">forward</span>(self, x):
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool(e1))
+        <span class="comment">... # encode → bottleneck → decode</span>
+        d1 = self.dec1(torch.cat([self.up1(d2), e1], dim=<span class="number">1</span>))
+        <span class="keyword">return</span> torch.sigmoid(self.out(d1))</pre>
     </div>
   </div>
 
-  <!-- Key Findings -->
+  <!-- HSV Mask Generation -->
   <div class="content-section">
-    <div class="content-section-label">Findings</div>
-    <h2>Key Results</h2>
+    <div class="content-section-label">Labeling</div>
+    <h2>HSV Confidence Masking</h2>
+    <p>
+      Rather than treating all pixels equally, the HSV labeling pipeline creates <strong>three-class confidence masks</strong>. Only pixels where the color space provides high-confidence classification contribute to the HSV loss — uncertain pixels (moderate brightness and saturation) are ignored, preventing the model from learning noisy labels.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>hsv_labeling.py</span>
+      </div>
+      <pre><span class="keyword">def</span> <span class="function">get_hsv_mask_with_confidence</span>(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv)
+
+    <span class="comment"># Confident SNOW: very bright AND very low saturation</span>
+    hsv_positive = ((v &gt;= <span class="number">200</span>) &amp; (s &lt;= <span class="number">30</span>)).astype(np.uint8) * <span class="number">255</span>
+
+    <span class="comment"># Confident NON-SNOW: dark OR colorful</span>
+    hsv_negative = ((v &lt; <span class="number">100</span>) | (s &gt; <span class="number">80</span>)).astype(np.uint8) * <span class="number">255</span>
+
+    <span class="comment"># Everything else is UNCERTAIN (ignored in loss)</span>
+    hsv_ignore = <span class="number">255</span> - cv2.bitwise_or(hsv_positive, hsv_negative)
+
+    <span class="comment"># Morphological cleanup</span>
+    kernel = np.ones((<span class="number">5</span>, <span class="number">5</span>), np.uint8)
+    hsv_positive = cv2.morphologyEx(hsv_positive, cv2.MORPH_OPEN, kernel)
+    hsv_positive = cv2.morphologyEx(hsv_positive, cv2.MORPH_CLOSE, kernel)
+
+    <span class="keyword">return</span> hsv_positive, hsv_negative, hsv_ignore</pre>
+    </div>
+  </div>
+
+  <!-- Separated Loss -->
+  <div class="content-section">
+    <div class="content-section-label">Loss Function</div>
+    <h2>Separated Dual-Loss</h2>
+    <p>
+      The key innovation is a <strong>separated loss function</strong> that independently weighs two supervision signals. The HSV loss is computed only on confident pixels (where HSV thresholding is reliable), while the LabelMe loss is computed only within manually annotated regions. This allows the model to learn from both automatic and manual labels without one corrupting the other.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>separated_loss.py</span>
+      </div>
+      <pre><span class="keyword">class</span> <span class="function">SeparatedSnowLoss</span>(nn.Module):
+    <span class="keyword">def</span> <span class="function">forward</span>(self, pred, hsv_snow_mask, hsv_valid_mask,
+                labelme_mask, labelme_valid_mask):
+        <span class="comment"># HSV Loss: only on confident HSV pixels</span>
+        hsv_bce = F.binary_cross_entropy(pred, hsv_snow_mask, reduction=<span class="string">'none'</span>)
+        hsv_loss = (hsv_bce * hsv_valid_mask).sum() / (hsv_valid_mask.sum() + <span class="number">1e-8</span>)
+
+        <span class="comment"># LabelMe Loss: only on manually labeled pixels</span>
+        lm_bce = F.binary_cross_entropy(pred, labelme_mask, reduction=<span class="string">'none'</span>)
+        lm_loss = (lm_bce * labelme_valid_mask).sum() / (labelme_valid_mask.sum() + <span class="number">1e-8</span>)
+
+        <span class="keyword">return</span> self.hsv_weight * hsv_loss + self.labelme_weight * lm_loss</pre>
+    </div>
+  </div>
+
+  <!-- Data Pipeline -->
+  <div class="content-section">
+    <div class="content-section-label">Data</div>
+    <h2>Dataset &amp; Augmentation</h2>
+    <p>
+      The custom <strong>SeparatedSnowDataset</strong> loads drone-captured roof crop images, generates HSV confidence masks on-the-fly, and optionally loads LabelMe JSON annotations for shadow snow regions. All masks are intersected with a roof mask (excluding black background) and resized with aspect-ratio-preserving padding to 256&times;256.
+    </p>
+    <p>
+      Data augmentation includes random horizontal/vertical flips, 90/180/270-degree rotations, and brightness jittering (0.8&ndash;1.2&times;). Augmentations are applied identically to the image and all corresponding masks to maintain spatial alignment.
+    </p>
 
     <div class="highlight-box">
-      <h4>Highlights</h4>
+      <h4>Dataset Returns (per image)</h4>
       <ul>
-        <li>Identified 23% of sensor readings as degraded quality across 12 IW zones</li>
-        <li>Calibrated EnergyPlus models achieved RMSE of ±1.2°C for zone temperatures</li>
-        <li>Trust scores correlated strongly with operator-reported reliability concerns</li>
-        <li>Framework reduced false confidence in model predictions by ~35%</li>
+        <li><strong>image</strong>: RGB tensor (3 &times; 256 &times; 256)</li>
+        <li><strong>hsv_snow_mask</strong>: Binary target for confident snow pixels</li>
+        <li><strong>hsv_valid_mask</strong>: Where to compute HSV loss (snow + non-snow pixels)</li>
+        <li><strong>labelme_mask</strong>: Binary target for manually annotated shadow snow</li>
+        <li><strong>labelme_valid_mask</strong>: Dilated region around LabelMe annotations</li>
+        <li><strong>roof_mask</strong>: Valid roof area (excludes black background)</li>
       </ul>
     </div>
+  </div>
 
+  <!-- Inference -->
+  <div class="content-section">
+    <div class="content-section-label">Inference</div>
+    <h2>Prediction &amp; Output</h2>
     <p>
-      <em>Note: Replace the above with your actual results as the project progresses.</em>
+      At inference time, images are preprocessed with the same padding pipeline, passed through the trained U-Net to produce pixel-level probability maps, and thresholded at 0.5 to generate binary snow masks. The <strong>snow coverage ratio</strong> is calculated as the percentage of roof pixels classified as snow, and results are exported as ranked Excel spreadsheets alongside overlay visualizations.
     </p>
+
+    <div class="highlight-box">
+      <h4>Evaluation Metrics</h4>
+      <ul>
+        <li>IoU (Intersection over Union) computed separately for HSV and LabelMe regions</li>
+        <li>Precision and Recall tracked per-image on validation set</li>
+        <li>Training monitored with ReduceLROnPlateau scheduler (patience=5, factor=0.5)</li>
+        <li>Best model saved based on combined validation loss</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div class="content-section">
+    <div class="content-section-label">Technologies</div>
+    <div class="tags-row">
+      <span class="tag">PyTorch</span>
+      <span class="tag">U-Net</span>
+      <span class="tag">OpenCV</span>
+      <span class="tag">Semantic Segmentation</span>
+      <span class="tag">HSV Color Space</span>
+      <span class="tag">LabelMe</span>
+      <span class="tag">Drone Imagery</span>
+      <span class="tag">BatchNorm</span>
+      <span class="tag">BCE Loss</span>
+      <span class="tag">Scikit-learn</span>
+    </div>
   </div>
 
 </div>
@@ -701,17 +776,17 @@
 <!-- ─── Next / Previous Project ─── -->
 <div class="project-nav">
   <a href="project-energy-audit.html">
-    <span class="nav-direction">← Previous</span>
-    <span class="nav-title">Energy Audit Assistant</span>
+    <span class="nav-direction">&larr; Previous</span>
+    <span class="nav-title">Smart Energy Audit</span>
   </a>
-  <a href="project-air-quality.html" class="next">
-    <span class="nav-direction">Next →</span>
-    <span class="nav-title">Air Quality Forecasting</span>
+  <a href="project-digital-twin.html" class="next">
+    <span class="nav-direction">Next &rarr;</span>
+    <span class="nav-title">Spring-Mass-Damper Modeling</span>
   </a>
 </div>
 
 <footer>
-  <span>© 2025 Joonseong. Built with care.</span>
+  <span>&copy; 2025 Joonseong. Built with care.</span>
   <span>Pittsburgh, PA</span>
 </footer>
 

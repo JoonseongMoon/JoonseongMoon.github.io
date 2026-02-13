@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Twin Trustworthiness — Joonseong</title>
+<title>Spring-Mass-Damper Modeling — Joonseong</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -236,6 +236,14 @@
     letter-spacing: -0.01em;
   }
 
+  .content-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
   .content-section p {
     color: var(--text-muted);
     font-size: 0.95rem;
@@ -246,6 +254,20 @@
   .content-section p strong {
     color: var(--text);
     font-weight: 500;
+  }
+
+  /* ─── Equation Block ─── */
+  .equation-block {
+    margin: 1.5rem 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--text);
+    letter-spacing: 0.02em;
   }
 
   /* ─── Image Gallery ─── */
@@ -264,29 +286,18 @@
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--surface);
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .gallery-item img {
+    max-width: 500px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover img { transform: scale(1.03); }
-
-  .gallery-item .img-placeholder {
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    background: #0f0f0f;
+    padding: 1rem;
   }
 
   .gallery-caption {
@@ -294,6 +305,8 @@
     font-size: 0.78rem;
     color: var(--text-muted);
     border-top: 1px solid var(--border);
+    width: 100%;
+    background: var(--surface);
   }
 
   /* ─── Code Block ─── */
@@ -532,40 +545,34 @@
 <!-- ─── Nav ─── -->
 <nav>
   <a href="../index.html" class="nav-logo">JS<span>.</span></a>
-  <a href="../index.html" class="back-link">← Back to Home</a>
+  <a href="../index.html" class="back-link">&larr; Back to Home</a>
 </nav>
 
 <!-- ─── Project Hero ─── -->
 <div class="project-hero">
-  <div class="project-hero-category">Digital Twin</div>
-  <h1>Digital Twin Trustworthiness Framework</h1>
+  <div class="project-hero-category">Predictive Analytics (12-831)</div>
+  <h1>Spring-Mass-Damper System: Physics-Based vs. Statistical Modeling</h1>
   <p class="project-hero-desc">
-    Developing a data quality auditing and uncertainty quantification pipeline for the CMU Intelligent Workplace, targeting zone-level thermal performance prediction using EnergyPlus modeling.
+    Comparing two fundamentally different approaches to predictive modeling — physics-based calibration and ARMAX statistical modeling — using a spring-mass-damper system with noisy synthetic data.
   </p>
   <div class="project-meta-row">
+    <div class="project-meta-item">
+      <span class="label">Course</span>
+      <span class="value">12-831 Digital Twin</span>
+    </div>
     <div class="project-meta-item">
       <span class="label">Year</span>
       <span class="value">2025</span>
     </div>
     <div class="project-meta-item">
       <span class="label">Role</span>
-      <span class="value">Graduate Researcher</span>
+      <span class="value">Graduate Coursework</span>
     </div>
     <div class="project-meta-item">
-      <span class="label">Advisors</span>
-      <span class="value">Prof. Loftness · Prof. Meltem · Prof. Betz</span>
-    </div>
-    <div class="project-meta-item">
-      <span class="label">Code</span>
-      <span class="value"><a href="#">GitHub Repo ↗</a></span>
+      <span class="label">Tools</span>
+      <span class="value">Python, SciPy, statsmodels</span>
     </div>
   </div>
-</div>
-
-<!-- ─── Cover Image ─── -->
-<div class="project-cover">
-  <!-- Replace with: <img src="images/dt-cover.jpg" alt="Digital Twin Cover"> -->
-  <div class="cover-placeholder">Replace with project cover image</div>
 </div>
 
 <!-- ─── Content ─── -->
@@ -574,126 +581,159 @@
   <!-- Overview -->
   <div class="content-section">
     <div class="content-section-label">Overview</div>
-    <h2>Why Trustworthiness Matters</h2>
+    <h2>Problem Statement</h2>
     <p>
-      Digital twins promise real-time mirroring of physical buildings, but how much can we trust their predictions? This research develops a systematic framework for <strong>auditing data quality</strong> and <strong>quantifying uncertainty</strong> in digital twin outputs for the CMU Intelligent Workplace.
+      In engineering systems, predictive models are essential for monitoring, control, and diagnostics. This assignment explores two fundamentally different approaches: a <strong>physics-based model</strong> grounded in first principles, and a <strong>statistical ARMAX model</strong> that learns patterns directly from data. Using a spring-mass-damper system as a test case, we examine how both approaches perform when calibrated on the same noisy measurements.
     </p>
     <p>
-      The goal is to move beyond black-box predictions toward transparent, calibrated confidence intervals that building operators can actually rely on for decision-making.
+      The spring-mass-damper system is governed by a second-order ordinary differential equation:
+    </p>
+    <div class="equation-block">
+      m &middot; d&sup2;x/dt&sup2; + c &middot; dx/dt + k &middot; x = F(t)
+    </div>
+    <p>
+      Where <strong>m</strong> is the mass, <strong>c</strong> is the damping coefficient, <strong>k</strong> is the spring constant, and <strong>F(t)</strong> is the external forcing function. The true parameters used for data generation were m = 1.0, c = 0.5, k = 2.0.
     </p>
   </div>
 
-  <!-- Process / Journey -->
+  <!-- Part 1: Data Generation -->
   <div class="content-section">
-    <div class="content-section-label">Process</div>
-    <h2>Research Journey</h2>
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-date">Phase 1 — Literature Review</div>
-        <div class="timeline-title">Surveying the Landscape</div>
-        <div class="timeline-desc">Reviewed 16+ papers on HVAC control systems using AI/ML, identifying gaps in trustworthiness metrics and uncertainty reporting in digital twin literature.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">Phase 2 — Data Pipeline</div>
-        <div class="timeline-title">Sensor Data Auditing</div>
-        <div class="timeline-desc">Built an automated pipeline to detect anomalies, missing values, and drift in IW sensor data across multiple zones and time periods.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">Phase 3 — EnergyPlus Modeling</div>
-        <div class="timeline-title">Calibrated Simulation</div>
-        <div class="timeline-desc">Developed zone-level thermal models in EnergyPlus, calibrating against measured data and quantifying prediction intervals.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">Phase 4 — Framework</div>
-        <div class="timeline-title">Trustworthiness Metrics</div>
-        <div class="timeline-desc">Formalized a scoring framework that combines data quality indicators with model uncertainty to produce actionable trust scores.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Screenshots / Gallery -->
-  <div class="content-section">
-    <div class="content-section-label">Visuals</div>
-    <h2>Screenshots &amp; Results</h2>
-
-    <div class="image-gallery cols-2">
-      <div class="gallery-item">
-        <!-- Replace with: <img src="images/dt-dashboard.jpg" alt="Dashboard"> -->
-        <div class="img-placeholder">Screenshot 1</div>
-        <div class="gallery-caption">Data quality dashboard showing sensor health across zones</div>
-      </div>
-      <div class="gallery-item">
-        <div class="img-placeholder">Screenshot 2</div>
-        <div class="gallery-caption">EnergyPlus model vs. measured temperature comparison</div>
-      </div>
-    </div>
-
-    <div class="image-gallery cols-1" style="margin-top:1rem;">
-      <div class="gallery-item">
-        <div class="img-placeholder" style="height:300px;">Wide screenshot / diagram</div>
-        <div class="gallery-caption">System architecture: from sensor ingestion to trust score output</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Code -->
-  <div class="content-section">
-    <div class="content-section-label">Implementation</div>
-    <h2>Code Highlights</h2>
+    <div class="content-section-label">Part 1</div>
+    <h2>Synthetic Data Generation</h2>
     <p>
-      A sample of the data quality scoring pipeline:
+      Training and testing datasets were generated by solving the ODE using <strong>scipy.integrate.solve_ivp</strong>. The training data used a sine forcing function F(t) = sin(t), while the testing data used a different forcing function F(t) = 2sin(2t) to evaluate generalization. Gaussian noise (&sigma; = 0.1) was added to simulate realistic measurement uncertainty.
     </p>
 
     <div class="code-block">
       <div class="code-header">
         <div class="code-dots"><span></span><span></span><span></span></div>
-        <span>data_quality.py</span>
+        <span>data_generation.py</span>
       </div>
-      <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
-<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+      <pre><span class="comment"># Physics-based model for spring-mass-damper system</span>
+<span class="keyword">def</span> <span class="function">spring_mass_damper</span>(t, y, m, c, k, force_func):
+    x, v = y
+    dxdt = v
+    dvdt = (force_func(t) - c * v - k * x) / m
+    <span class="keyword">return</span> [dxdt, dvdt]
 
-<span class="keyword">def</span> <span class="function">compute_quality_score</span>(df, col):
-    <span class="string">"""Compute data quality score for a sensor column."""</span>
-    completeness = 1 - df[col].isna().mean()
-    
-    <span class="comment"># Detect anomalies via IQR</span>
-    Q1, Q3 = df[col].quantile([0.25, 0.75])
-    iqr = Q3 - Q1
-    outlier_rate = ((df[col] &lt; Q1 - 1.5*iqr) | 
-                    (df[col] &gt; Q3 + 1.5*iqr)).mean()
-    
-    <span class="comment"># Weighted composite score</span>
-    score = 0.6 * completeness + 0.4 * (1 - outlier_rate)
-    <span class="keyword">return</span> round(score, 3)</pre>
-    </div>
+<span class="comment"># Generate training data with sine forcing</span>
+result_train = solve_ivp(
+    spring_mass_damper, t_span, y0, t_eval=t_eval,
+    args=(true_mass, true_damping, true_stiffness, sine_force)
+)
 
-    <div class="tags-row">
-      <span class="tag">Python</span>
-      <span class="tag">Pandas</span>
-      <span class="tag">EnergyPlus</span>
-      <span class="tag">Uncertainty Quantification</span>
-      <span class="tag">Data Quality</span>
+<span class="comment"># Add Gaussian noise to simulate measurement noise</span>
+noisy_position = position_train + np.random.normal(0, 0.1, size=position_train.shape)</pre>
     </div>
   </div>
 
-  <!-- Key Findings -->
+  <!-- Part 2: Physics-Based Model -->
   <div class="content-section">
-    <div class="content-section-label">Findings</div>
-    <h2>Key Results</h2>
+    <div class="content-section-label">Part 2</div>
+    <h2>Physics-Based Model Calibration</h2>
+    <p>
+      The physics-based approach uses a <strong>discretized Euler method</strong> to simulate the spring-mass-damper system, then calibrates the parameters (m, c, k) by minimizing the mean squared error between predicted and observed positions. Parameter estimation was performed using <strong>scipy.optimize.minimize</strong> with the L-BFGS-B method and positivity constraints.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>physics_model.py</span>
+      </div>
+      <pre><span class="keyword">def</span> <span class="function">discretized_spring_mass_damper</span>(params, times, forces, initial_conditions):
+    m, c, k = params
+    dt = times[1] - times[0]
+    positions = np.zeros(len(times))
+    velocities = np.zeros(len(times))
+    positions[0], velocities[0] = initial_conditions
+
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(1, len(times)):
+        <span class="comment"># Semi-implicit Euler integration</span>
+        velocities[i] = velocities[i-1] + (forces[i-1] - c*velocities[i-1] - k*positions[i-1]) / m * dt
+        positions[i] = positions[i-1] + velocities[i] * dt
+    <span class="keyword">return</span> positions
+
+<span class="comment"># Optimize parameters using L-BFGS-B</span>
+physics_result = minimize(
+    objective_function, x0=[1.5, 0.3, 1.5],
+    args=(times, positions, forces, y0),
+    bounds=[(1e-6, None)]*3, method=<span class="string">"L-BFGS-B"</span>
+)</pre>
+    </div>
+
+    <p>
+      The optimizer successfully recovered the true system parameters from noisy data, demonstrating the strength of physics-informed approaches when the underlying model structure is known.
+    </p>
+  </div>
+
+  <!-- Part 3: ARMAX Model -->
+  <div class="content-section">
+    <div class="content-section-label">Part 3</div>
+    <h2>ARMAX Statistical Model</h2>
+    <p>
+      The ARMAX (AutoRegressive Moving Average with eXogenous inputs) model takes a purely data-driven approach, using <strong>SARIMAX from statsmodels</strong> with 5 autoregressive lags and the external force as an exogenous input. Unlike the physics-based model, ARMAX does not require knowledge of the underlying differential equation — it learns temporal patterns directly from the data.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span>armax_model.py</span>
+      </div>
+      <pre><span class="comment"># Fit ARMAX model with 5 AR lags and force as exogenous input</span>
+armax_model = SARIMAX(
+    train_data[<span class="string">'position'</span>],
+    exog=train_data[<span class="string">'force'</span>],
+    order=(5, 0, 0),
+    enforce_stationarity=<span class="keyword">False</span>
+)
+armax_result = armax_model.fit(disp=<span class="keyword">False</span>)
+
+<span class="comment"># Generate out-of-sample predictions for test data</span>
+armax_test_predictions = armax_result.apply(
+    endog=test_data[<span class="string">'position'</span>],
+    exog=test_data[<span class="string">'force'</span>]
+).fittedvalues</pre>
+    </div>
+
+    <p>
+      The AR coefficients can be loosely related back to the physical system: their sum indicates system stability, and the force coefficient reflects the mass-normalized response magnitude.
+    </p>
+  </div>
+
+  <!-- Results -->
+  <div class="content-section">
+    <div class="content-section-label">Results</div>
+    <h2>Model Comparison</h2>
 
     <div class="highlight-box">
-      <h4>Highlights</h4>
+      <h4>Key Findings</h4>
       <ul>
-        <li>Identified 23% of sensor readings as degraded quality across 12 IW zones</li>
-        <li>Calibrated EnergyPlus models achieved RMSE of ±1.2°C for zone temperatures</li>
-        <li>Trust scores correlated strongly with operator-reported reliability concerns</li>
-        <li>Framework reduced false confidence in model predictions by ~35%</li>
+        <li>Physics-based model accurately recovered the true parameters (m, c, k) from noisy data</li>
+        <li>ARMAX model achieved strong one-step-ahead predictions on training data</li>
+        <li>Physics-based model generalized better to the unseen test forcing function (2sin(2t))</li>
+        <li>ARMAX performance degraded on test data due to distribution shift in the forcing input</li>
+        <li>Physics-based models leverage structural knowledge for better extrapolation; statistical models excel at interpolation</li>
       </ul>
     </div>
 
     <p>
-      <em>Note: Replace the above with your actual results as the project progresses.</em>
+      The comparison highlights a fundamental trade-off in predictive modeling: <strong>physics-based models</strong> require domain knowledge but generalize well to new conditions, while <strong>statistical models</strong> are flexible and easy to calibrate but may struggle when operating conditions change — a critical consideration for digital twin applications in building science.
     </p>
+  </div>
+
+  <!-- Tags -->
+  <div class="content-section">
+    <div class="content-section-label">Technologies</div>
+    <div class="tags-row">
+      <span class="tag">Python</span>
+      <span class="tag">SciPy</span>
+      <span class="tag">statsmodels</span>
+      <span class="tag">SARIMAX</span>
+      <span class="tag">ODE Solving</span>
+      <span class="tag">Parameter Estimation</span>
+      <span class="tag">L-BFGS-B</span>
+      <span class="tag">Time Series</span>
+    </div>
   </div>
 
 </div>
@@ -701,17 +741,17 @@
 <!-- ─── Next / Previous Project ─── -->
 <div class="project-nav">
   <a href="project-energy-audit.html">
-    <span class="nav-direction">← Previous</span>
+    <span class="nav-direction">&larr; Previous</span>
     <span class="nav-title">Smart Energy Audit</span>
   </a>
   <a href="project-snow-detection.html" class="next">
-    <span class="nav-direction">Next →</span>
+    <span class="nav-direction">Next &rarr;</span>
     <span class="nav-title">Roof Snow Detection</span>
   </a>
 </div>
 
 <footer>
-  <span>© 2025 Joonseong. Built with care.</span>
+  <span>&copy; 2025 Joonseong. Built with care.</span>
   <span>Pittsburgh, PA</span>
 </footer>
 
