@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urban Resilience & Environmental Risk Analysis — Joonseong</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-hover: #1a1a1a;
+    --border: #222;
+    --border-light: #333;
+    --text: #e8e6e1;
+    --text-muted: #8a8780;
+    --accent: #c4a882;
+    --accent-dim: #8a7560;
+    --accent-glow: rgba(196,168,130,0.08);
+    --tag-bg: #1a1916;
+    --tag-border: #2a2820;
+    --code-bg: #111;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-light) transparent; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── Nav ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  /* ─── Project Hero ─── */
+  .project-hero {
+    padding: 10rem 3rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .project-hero-category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .project-hero-category::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent-dim);
+  }
+
+  .project-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 650px;
+    margin-bottom: 2rem;
+  }
+
+  .project-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .project-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .project-meta-item .label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+
+  .project-meta-item .value {
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .project-meta-item .value a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .project-meta-item .value a:hover { border-color: var(--accent); }
+
+  /* ─── Cover Image ─── */
+  .project-cover {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 4rem;
+    padding: 0 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .project-cover img, .project-cover .cover-placeholder {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    padding: 1rem;
+  }
+
+  .cover-placeholder {
+    height: 400px;
+    background: linear-gradient(135deg, #0d1a14, #141a10, #101a18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Content Area ─── */
+  .project-content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 3rem 6rem;
+  }
+
+  /* ─── Section Blocks ─── */
+  .content-section {
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .content-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .content-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .content-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .content-section p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    margin-bottom: 1rem;
+  }
+
+  .content-section p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ─── Image Gallery ─── */
+  .image-gallery {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .image-gallery.cols-2 { grid-template-columns: 1fr 1fr; }
+  .image-gallery.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .image-gallery.cols-1 { grid-template-columns: 1fr; }
+
+  .gallery-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #ffffff;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    background: #ffffff;
+    padding: 1rem;
+  }
+
+  .gallery-item:hover img { transform: none; }
+
+  .gallery-item .img-placeholder {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    background: #0f0f0f;
+  }
+
+  .gallery-caption {
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── Key Findings / Highlights Box ─── */
+  .highlight-box {
+    margin: 2rem 0;
+    padding: 1.5rem 1.75rem;
+    background: var(--accent-glow);
+    border: 1px solid var(--tag-border);
+    border-left: 3px solid var(--accent-dim);
+    border-radius: 0 10px 10px 0;
+  }
+
+  .highlight-box h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  .highlight-box ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .highlight-box ul li {
+    padding: 0.35rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .highlight-box ul li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--accent-dim);
+  }
+
+  /* ─── Tags row ─── */
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.65rem;
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+
+  /* ─── Next / Prev Project Navigation ─── */
+  .project-nav {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 3rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .project-nav a {
+    flex: 1;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .project-nav a:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  .project-nav .nav-direction {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .project-nav .nav-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+
+  .project-nav a.next { text-align: right; }
+
+  /* ─── Footer ─── */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .project-hero { padding: 8rem 1.5rem 3rem; }
+    .project-cover { padding: 0 1.5rem; }
+    .project-content { padding: 0 1.5rem 4rem; }
+    .project-meta-row { flex-direction: column; gap: 1rem; }
+    .image-gallery.cols-2, .image-gallery.cols-3 { grid-template-columns: 1fr; }
+    .project-nav { flex-direction: column; padding: 0 1.5rem 4rem; }
+    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Nav ─── -->
+<nav>
+  <a href="../index.html" class="nav-logo">JS<span>.</span></a>
+  <a href="../index.html" class="back-link">&larr; Back to Home</a>
+</nav>
+
+<!-- ─── Project Hero ─── -->
+<div class="project-hero">
+  <div class="project-hero-category">GIS / Urban Climate</div>
+  <h1>Evaluating Hong Kong's Urban Heat Island Effect</h1>
+  <p class="project-hero-desc">
+    A GIS-based study examining how building height, density, and urban morphology contribute to the Urban Heat Island effect in Hong Kong, using Landsat satellite imagery and spatial analysis of two contrasting districts.
+  </p>
+  <div class="project-meta-row">
+    <div class="project-meta-item">
+      <span class="label">Year</span>
+      <span class="value">2024</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Role</span>
+      <span class="value">GIS Student Project</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Tools</span>
+      <span class="value">ArcGIS &middot; Landsat 8</span>
+    </div>
+    <div class="project-meta-item">
+      <span class="label">Focus</span>
+      <span class="value">Urban Climate &amp; Sustainability</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Cover Image ─── -->
+<div class="project-cover">
+  <img src="project-urban-resilience/HeatVulnerability.png" alt="Building density map of Hong Kong" style="width:100%; display:block;">
+</div>
+
+<!-- ─── Content ─── -->
+<div class="project-content">
+
+  <!-- Introduction -->
+  <div class="content-section">
+    <div class="content-section-label">Introduction</div>
+    <h2>Urban Heat in a High-Density City</h2>
+    <p>
+      Hong Kong, a densely populated city with limited developable land and a subtropical climate, faces significant challenges from the <strong>Urban Heat Island (UHI) effect</strong>. Its unique urban morphology&mdash;characterized by high-rise clusters, narrow streets, and minimal green spaces&mdash;exacerbates heat retention and reduces natural ventilation, resulting in elevated temperatures, increased energy consumption, and reduced thermal comfort.
+    </p>
+    <p>
+      This study examines the relationship between building height and density and the UHI effect in two contrasting districts: <strong>Happy Valley</strong>, a dense, medium-rise residential area, and <strong>Tung Chung</strong>, a newer high-rise development with planned green spaces. By analyzing Land Surface Temperature (LST) and UHI indices using GIS-based Landsat data, this study explores how urban form affects thermal environments and proposes strategies to mitigate UHI effects in high-density cities.
+    </p>
+  </div>
+
+  <!-- Methodology -->
+  <div class="content-section">
+    <div class="content-section-label">Methodology</div>
+    <h2>GIS-Based Landsat Analysis</h2>
+    <p>
+      The research employs <strong>Landsat 8 satellite imagery</strong> processed using thermal bands and spectral indices to calculate surface temperatures. Normalized Difference Vegetation Index (NDVI) and Normalized Difference Built-Up Index (NDBI) were integrated to analyze vegetation and urban density patterns. Building height and density data from the Hong Kong Planning Department were incorporated into GIS for spatial correlation with LST.
+    </p>
+  </div>
+
+  <!-- Factors Affecting UHI -->
+  <div class="content-section">
+    <div class="content-section-label">Analysis</div>
+    <h2>Factors Affecting UHI</h2>
+
+    <p>
+      <strong>Building Density</strong> &mdash; Building density is a fundamental factor, yet its effects are complex and context-dependent. Yuen Long in northern Hong Kong exhibits a high UHI index despite its predominance of low-rise structures. The dense layout of older buildings, narrow streets, and minimal vegetation significantly hinder natural ventilation, while impervious surfaces like asphalt and concrete exacerbate surface temperatures.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig1.png" alt="Building density map of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 1 &mdash; Building density distribution across Hong Kong</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Building Height</strong> &mdash; High-rise clusters in Central, Tsim Sha Tsui, and Quarry Bay emerge as thermal hotspots due to dense vertical development and heat-retentive materials. The large surface areas of skyscrapers absorb solar radiation during the day and release it slowly at night. The &ldquo;street canyon&rdquo; effect restricts airflow, while reflective glass fa&ccedil;ades intensify localized heating by redirecting solar radiation onto surrounding areas.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig2.png" alt="Building height map of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 2 &mdash; Building height distribution across Hong Kong</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Wind Speed</strong> &mdash; Hong Kong's natural topography creates varied wind conditions that shape localized thermal environments. Mountainous areas on Lantau Island and northern Hong Kong Island benefit from higher wind speeds, enhancing natural ventilation. However, this advantage is largely absent in dense urban areas like Wan Chai and Mong Kok, where the &ldquo;urban canyon&rdquo; effect significantly restricts airflow.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig3.png" alt="Wind speed map of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 3 &mdash; Ground-level wind speed across Hong Kong</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Land Use &amp; Land Cover (LULC)</strong> &mdash; Urban districts dominated by impervious surfaces, such as Mong Kok and Sham Shui Po, experience high UHI intensity due to heat absorption and low albedo. Mixed-use areas like Tung Chung demonstrate that a balance between built-up areas and green spaces can reduce UHI intensity, yet replication is often limited by economic and political constraints.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig4.png" alt="LULC map of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 4 &mdash; Land use / land cover classification of Hong Kong</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Green &amp; Blue Space</strong> &mdash; Urban districts like Central and Wan Chai suffer from limited vegetation, where small parks and minimal tree coverage fail to offset the thermal load of dense development. In contrast, suburban districts such as Tung Chung and Sai Kung benefit from larger green spaces and proximity to natural landscapes. The presence of blue spaces also contributes to localized cooling by regulating temperatures and enhancing thermal comfort.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig5.png" alt="Green and blue space map of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 5 &mdash; Green and blue space distribution across Hong Kong</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UHI Results -->
+  <div class="content-section">
+    <div class="content-section-label">Results</div>
+    <h2>Urban Heat Island in Hong Kong</h2>
+    <p>
+      UHI intensity demonstrates substantial spatial variation. The most severe effects are concentrated in <strong>Central and Kowloon</strong>, where dense clusters of high-rise buildings, extensive use of heat-retentive materials, and intense human activity create persistent thermal hotspots. Restricted airflow due to the &ldquo;urban canyon&rdquo; effect further intensifies heat retention.
+    </p>
+    <p>
+      Moderate UHI effects are observed in areas like <strong>Yuen Long</strong>, where low-rise structures allow slightly better airflow but impervious surfaces and minimal vegetation still contribute to significant heat retention. In contrast, the outer areas of the <strong>New Territories and Lantau Island</strong> exhibit the lowest UHI intensity, benefiting from low-density development, extensive vegetation, higher wind speeds, and proximity to natural landscapes.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig6.png" alt="UHI index from Landsat imagery" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 6 &mdash; UHI calculated from Landsat satellite imagery</div>
+      </div>
+    </div>
+
+    <p>
+      By weighting additional factors&mdash;building density, building height, wind speed, land use, and green/blue space coverage&mdash;a <strong>refined UHI index</strong> was computed. This multi-factor weighted approach reveals a more nuanced picture of thermal vulnerability than Landsat-derived surface temperature alone.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig7.png" alt="Weighted UHI index of Hong Kong" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 7 &mdash; Weighted UHI index incorporating building density, height, wind speed, LULC, and green/blue space factors</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Studies -->
+  <div class="content-section">
+    <div class="content-section-label">Case Studies</div>
+    <h2>Happy Valley vs. Tung Chung</h2>
+    <p>
+      <strong>Happy Valley</strong>, located on Hong Kong Island, is a mature urban district with a mix of high-rise and low-rise developments. Its closely packed buildings and narrow streets create urban canyons that trap heat and reduce airflow. Landsat analysis reveals high UHI intensity, particularly in areas dominated by high-rise towers. Vegetation coverage is minimal, and impervious surfaces like asphalt roads and concrete rooftops dominate the landscape, intensifying heat absorption and retention.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig8.png" alt="Happy Valley building height map" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 8 &mdash; Building height distribution in Happy Valley</div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Tung Chung</strong>, located on Lantau Island, presents a contrasting environment. As a newer development, it was planned with relatively lower building density, open spaces strategically integrated into the urban layout, and a mix of low-rise and high-rise residential towers. Landsat imagery indicates lower UHI intensity compared to Happy Valley, especially in coastal zones. Coastal wind exposure further enhances ventilation, though localized hotspots are still observed in inland areas with denser building clusters.
+    </p>
+
+    <div class="image-gallery cols-1">
+      <div class="gallery-item">
+        <img src="project-urban-resilience/fig9.png" alt="Tung Chung building height map" style="width:100%; display:block;">
+        <div class="gallery-caption">Fig. 9 &mdash; Building height distribution in Tung Chung</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conclusion -->
+  <div class="content-section">
+    <div class="content-section-label">Conclusion</div>
+    <h2>Key Findings &amp; Recommendations</h2>
+
+    <div class="highlight-box">
+      <h4>Highlights</h4>
+      <ul>
+        <li>High-density areas like Central and Kowloon show elevated UHI intensity due to high-rise clusters, limited green spaces, and restricted airflow</li>
+        <li>Low-rise but compact districts like Yuen Long also exhibit thermal stress from narrow streets and heat-absorbing materials</li>
+        <li>Happy Valley's dense, mixed-height layout and lack of green infrastructure exacerbate UHI effects, calling for retrofitting solutions like green roofs and permeable pavements</li>
+        <li>Tung Chung's planned green spaces and coastal wind corridors demonstrate how thoughtful urban design can mitigate UHI effects</li>
+        <li>Integrated urban planning that balances green infrastructure, building layouts, and ventilation corridors is critical for climate-resilient cities</li>
+      </ul>
+    </div>
+
+    <div class="tags-row">
+      <span class="tag">GIS</span>
+      <span class="tag">Landsat 8</span>
+      <span class="tag">Urban Heat Island</span>
+      <span class="tag">LST</span>
+      <span class="tag">NDVI</span>
+      <span class="tag">NDBI</span>
+      <span class="tag">Hong Kong</span>
+      <span class="tag">Spatial Analysis</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── Next / Previous Project ─── -->
+<div class="project-nav">
+  <a href="../index.html">
+    <span class="nav-direction">&larr; Back</span>
+    <span class="nav-title">All Projects</span>
+  </a>
+  <a href="project-parametric-park.html" class="next">
+    <span class="nav-direction">Next &rarr;</span>
+    <span class="nav-title">Parametric Park Design</span>
+  </a>
+</div>
+
+<footer>
+  <span>&copy; 2025 Joonseong. Built with care.</span>
+  <span>Pittsburgh, PA</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.content-section').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
