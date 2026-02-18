@@ -7,19 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface-hover: #1a1a1a;
-    --border: #222;
-    --border-light: #333;
-    --text: #e8e6e1;
-    --text-muted: #8a8780;
-    --accent: #c4a882;
-    --accent-dim: #8a7560;
-    --accent-glow: rgba(196,168,130,0.08);
-    --tag-bg: #1a1916;
-    --tag-border: #2a2820;
-    --code-bg: #111;
+    --bg: #ffffff;
+    --surface: #f7f7f5;
+    --surface-hover: #f0f0ec;
+    --border: #e2e0db;
+    --border-light: #d5d3ce;
+    --text: #2c2c2a;
+    --text-muted: #6b6b66;
+    --accent: #5a7a6a;
+    --accent-dim: #7a9a8a;
+    --accent-glow: rgba(90,122,106,0.06);
+    --tag-bg: #f2f4f2;
+    --tag-border: #dde2dd;
+    --code-bg: #f5f5f3;
+    --grid-color: rgba(0,0,0,0.04);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,9 +39,12 @@
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 48px 48px;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 0;
   }
 
   /* ─── Nav ─── */
@@ -53,7 +57,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(10,10,10,0.8);
+    background: rgba(255,255,255,0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
@@ -86,8 +90,6 @@
     padding: 10rem 3rem 4rem;
     max-width: 900px;
     margin: 0 auto;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
   }
 
   .project-hero-category {
@@ -166,8 +168,6 @@
     max-width: 1100px;
     margin: 0 auto 4rem;
     padding: 0 3rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.4s forwards;
   }
 
   .project-cover img, .project-cover .cover-placeholder {
@@ -183,7 +183,7 @@
 
   .cover-placeholder {
     height: 400px;
-    background: linear-gradient(135deg, #0d1a14, #141a10, #101a18);
+    background: linear-gradient(135deg, #f0eeec, #eef2f0, #f0eef2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,14 +204,6 @@
   /* ─── Section Blocks ─── */
   .content-section {
     margin-bottom: 4rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.6s ease;
-  }
-
-  .content-section.visible {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   .content-section-label {
@@ -412,11 +404,6 @@
     align-items: center;
     font-size: 0.75rem;
     color: var(--text-muted);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
   }
 
   @media (max-width: 768px) {
@@ -660,17 +647,6 @@
   <span>Pittsburgh, PA</span>
 </footer>
 
-<script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.content-section').forEach(el => observer.observe(el));
-</script>
 
 </body>
 </html>
